@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -euo pipefail
+
+main() {
+  echo "Reading meta-data ..."
+  env_list=$(plugin_read_list | evaluate_keys)
+
+  echo "Exporting ${#env_list} bytes of env"
+  set -a
+  eval "$env_list"
+  set +a
+}
+
+function plugin_read_list() {
+  local prefix="BUILDKITE_PLUGIN_METADATA_ENV"
+  local parameter="${prefix}_0"
+
+  if [[ -n "${!parameter:-}" ]]; then
+    local i=0
+    local parameter="${prefix}_${i}"
+    while [[ -n "${!parameter:-}" ]]; do
+      echo "${!parameter}"
+      i=$((i+1))
+      parameter="${prefix}_${i}"
+    done
+  fi
+}
+
+function evaluate_keys() {
+  while IFS=$'\n' read -r meta_data_key ; do
+    read_meta_data "$meta_data_key"
+  done
+}
+
+function read_meta_data() {
+  local key="$1"
+  local value
+  value=$(buildkite-agent meta-data get "$key")
+  if [[ -n "$value" ]]; then
+    echo "${key}=(${#value} chars)" >&2;
+    echo "${key}=${value}"
+  fi
+}
+
+main
