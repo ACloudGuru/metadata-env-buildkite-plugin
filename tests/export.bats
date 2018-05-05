@@ -10,7 +10,7 @@ load '/usr/local/lib/bats/load.bash'
     "meta-data get FOO : echo BAR" \
     "meta-data get BAR : echo TENDER"
 
-  run $PWD/hooks/pre-command
+  run $PWD/hooks/environment
 
   assert_success
   assert_output --partial "FOO=(3 chars)"
