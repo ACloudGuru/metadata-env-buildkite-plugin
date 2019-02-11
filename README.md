@@ -29,8 +29,8 @@ steps:
             value: "development"
   - command: echo \$NODE_ENV
     plugins:
-      ACloudGuru/metadata-env:
-        keys:
-          - ROLE
-          - node-env=NODE_ENV #remaps node-env key to NODE_ENV <key>=<alias>
+      - ACloudGuru/metadata-env:
+          keys:
+            - ROLE
+            - node-env=NODE_ENV #remaps node-env key to NODE_ENV <key>=<alias>
 ```
